@@ -1,6 +1,8 @@
 '''
 Module providing `NumpyCodeObject`.
 '''
+import __builtin__ as builtins
+
 import numpy as np
 
 from brian2.core.preferences import brian_prefs, BrianPreference
@@ -102,6 +104,14 @@ class NumpyCodeObject(CodeObject):
     def compile(self):
         super(NumpyCodeObject, self).compile()
         self.compiled_code = compile(self.code, '(string)', 'exec')
+
+    def __getstate__(self):
+        # Don't pickle compiled code or namespace
+        state = dict(self.__dict__)
+        state['compiled_code'] = None
+        state['namespace'] = None
+        state['nonconstant_values'] = None
+        return state
 
     def run(self):
         exec self.compiled_code in self.namespace
