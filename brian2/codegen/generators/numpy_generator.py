@@ -168,15 +168,21 @@ DEFAULT_FUNCTIONS['randn'].implementations.add_implementation(NumpyCodeGenerator
                                                               code=randn_func)
 DEFAULT_FUNCTIONS['rand'].implementations.add_implementation(NumpyCodeGenerator,
                                                              code=rand_func)
-clip_func = lambda array, a_min, a_max: np.clip(array, a_min, a_max)
+
+def clip_func(array, a_min, a_max):
+    return np.clip(array, a_min, a_max)
 DEFAULT_FUNCTIONS['clip'].implementations.add_implementation(NumpyCodeGenerator,
                                                              code=clip_func)
-int_func = lambda value: np.int_(value)
+def int_func(value):
+    return np.int_(value)
 DEFAULT_FUNCTIONS['int'].implementations.add_implementation(NumpyCodeGenerator,
                                                             code=int_func)
-ceil_func = lambda value: np.int_(np.ceil(value))
+def ceil_func(value):
+    return np.int_(np.ceil(value))
 DEFAULT_FUNCTIONS['ceil'].implementations.add_implementation(NumpyCodeGenerator,
                                                             code=ceil_func)
-floor_func = lambda value: np.int_(np.floor(value))
+
+def floor_func(value):
+    return np.int_(np.floor(value))
 DEFAULT_FUNCTIONS['floor'].implementations.add_implementation(NumpyCodeGenerator,
                                                             code=floor_func)
