@@ -76,9 +76,12 @@ class Expression(CodeString):
     def __init__(self, code):
         CodeString.__init__(self, code)
 
-        # : The expression as a sympy object
-        self.sympy_expr = str_to_sympy(self.code)
+        # Try to generate the sympy code to raise syntax errors
+        str_to_sympy(self.code)
 
+    @property
+    def sympy_expr(self):
+        return str_to_sympy(self.code)
 
     def split_stochastic(self):
         '''
