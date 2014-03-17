@@ -4,9 +4,8 @@ Module providing the `Synapses` class and related helper classes/functions.
 
 import collections
 from collections import defaultdict
-import weakref
-import itertools
 import re
+import weakref
 
 import numpy as np
 
@@ -23,6 +22,7 @@ from brian2.units.fundamentalunits import (Unit, Quantity,
                                            fail_for_dimension_mismatch)
 from brian2.units.allunits import second
 from brian2.utils.logger import get_logger
+from brian2.utils.proxy import Proxy
 from brian2.core.spikesource import SpikeSource
 
 
@@ -406,11 +406,11 @@ class Synapses(Group):
         
         self.codeobj_class = codeobj_class
 
-        self.source = weakref.proxy(source)
+        self.source = Proxy(source)
         if target is None:
             self.target = self.source
         else:
-            self.target = weakref.proxy(target)
+            self.target = Proxy(target)
             
         ##### Prepare and validate equations
         if model is None:
