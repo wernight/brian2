@@ -384,7 +384,7 @@ DEFAULT_FUNCTIONS['clip'].implementations.add_implementation(CPPCodeGenerator,
 
 int_code = {'support_code':
         '''
-        int int_(const bool value)
+        inline int int_(const bool value)
         {
 	        return value ? 1 : 0;
         }

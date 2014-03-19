@@ -30,7 +30,7 @@ Ci.connect('i>=3200', p=0.02)
 P.v = Vr + rand(len(P)) * (Vt - Vr)
 
 start_time = time.time()
-run(.1 * second)
+run(20 * second)
 duration = time.time() - start_time
 
 print duration

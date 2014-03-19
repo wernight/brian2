@@ -1,3 +1,4 @@
+from collections import defaultdict
 import weakref
 import time
 
@@ -363,6 +364,8 @@ class Network(Nameable):
             start = current = time.time()
             next_report_time = start + 10
 
+        total_run_time = defaultdict(float)
+
         while clock.running and not self._stopped and not Network._globally_stopped:
             # update the network time to this clocks time
             self.t_ = clock.t_
@@ -377,7 +380,9 @@ class Network(Nameable):
                 # update the objects with this clock
             for obj in self.objects:
                 if obj.clock in curclocks and obj.active:
+                    start_time = time.time()
                     obj.run()
+                    total_run_time[obj.name] += time.time() - start_time
             # tick the clock forward one time step
             for c in curclocks:
                 c.tick()
@@ -391,6 +396,12 @@ class Network(Nameable):
 
         if report is not None:
             print 'Took ', current-start, 's in total.'
+
+        sorted_times = [(name, total_time)
+                        for name, total_time in total_run_time.iteritems()]
+        sorted_times.sort(key=lambda v: v[1])
+        for n, t in sorted_times:
+            print n, t
         self.after_run()
         
     @device_override('network_stop')
