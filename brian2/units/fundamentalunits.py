@@ -717,7 +717,10 @@ def quantity_with_dimensions(floatval, dims):
     `get_or_create_dimensions` with the dimension tuple of the `dims`
     argument to make sure that unpickling (which calls this function) does not
     accidentally create new Dimension objects which should instead refer to
-    existing ones.
+    existing ones. Note that this function will always create a `Quantity`,
+    even for dimensionless values (it calls `Quantity.with_dimensions` with the
+    option ``force_quantity``.
+
 
     Parameters
     ----------
@@ -742,7 +745,8 @@ def quantity_with_dimensions(floatval, dims):
     get_or_create_dimensions
     '''
     return Quantity.with_dimensions(floatval,
-                                    get_or_create_dimension(dims._dims))
+                                    get_or_create_dimension(dims._dims),
+                                    force_quantity=True)
 
 
 class Quantity(np.ndarray, object):
@@ -1002,11 +1006,12 @@ class Quantity(np.ndarray, object):
         >>> 2 * metre
         2.0 * metre
         """
+        force_quantity = keywords.pop('force_quantity', False)
         if len(args) and isinstance(args[0], Dimension):
             dimensions = args[0]
         else:
             dimensions = get_or_create_dimension(*args, **keywords)
-        return Quantity(value, dim=dimensions)
+        return Quantity(value, dim=dimensions, force_quantity=force_quantity)
 
     ### ATTRIBUTES ###
     is_dimensionless = property(lambda self: self.dim.is_dimensionless,
@@ -1425,7 +1430,7 @@ class Quantity(np.ndarray, object):
     def __ne__(self, other):
         return self._comparison(other, 'NotEquals', operator.ne)
 
-    #### MAKE QUANTITY PICKABLE ####
+    #### MAKE QUANTITY PICKLABLE ####
     def __reduce__(self):
         return quantity_with_dimensions, (np.asarray(self), self.dim)
 
